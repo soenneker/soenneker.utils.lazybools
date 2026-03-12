@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Soenneker.Utils.LazyBools.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.Utils.LazyBools\Soenneker.Utils.LazyBools.csproj" />
     </ItemGroup>
 
     <ItemGroup>
