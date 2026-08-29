@@ -13,6 +13,7 @@ public static class LazyBoolUtil
     /// <summary>
     /// Gets the cached boolean value or computes and publishes it if uninitialized.
     /// </summary>
+    /// <returns>The the cached boolean value or computes and publishes it if uninitialized.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool GetOrInit<TState>(ref int state, bool threadSafe, TState arg, Func<TState, bool> compute)
     {
