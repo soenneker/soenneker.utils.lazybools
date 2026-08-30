@@ -31,7 +31,7 @@ public static class LazyBoolUtil
             return value;
         }
 
-        Interlocked.CompareExchange(ref state, newState, 0);
-        return value;
+        int observedState = Interlocked.CompareExchange(ref state, newState, 0);
+        return (observedState == 0 ? newState : observedState) == 2;
     }
 }

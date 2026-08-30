@@ -16,10 +16,32 @@ dotnet add package Soenneker.Utils.LazyBools
 
 ```csharp
 using Soenneker.Utils.LazyBools;
+
+public sealed class Feature
+{
+    private int _isAvailableState;
+
+    public bool IsAvailable => LazyBoolUtil.GetOrInit(
+        ref _isAvailableState,
+        threadSafe: true,
+        this,
+        static feature => feature.CheckAvailability());
+
+    private bool CheckAvailability() => /* expensive check */ true;
+}
 ```
 
 Call the static `LazyBoolUtil` methods directly; no dependency-injection registration is required.
 
-## Common operations
+## Semantics
 
-- `GetOrInit()` - Gets the cached boolean value or computes and publishes it if uninitialized.
+`GetOrInit` stores its state in the caller-provided `int`: `0` is uninitialized, `1` is false, and
+`2` is true. Initialize the field to zero and do not use or mutate it for anything else.
+
+With `threadSafe: true`, initialization is publication-only. Concurrent callers can run `compute`
+more than once, but one result is published and returned to every caller. Use a side-effect-free
+or otherwise concurrency-safe delegate. If the delegate throws before a value is published, the
+state remains uninitialized and a later call can retry.
+
+Use `threadSafe: false` only when calls are single-threaded or protected by external
+synchronization. That path avoids the interlocked publication operation.
